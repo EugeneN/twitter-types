@@ -177,7 +177,7 @@ instance FromJSON Status where
                <*> o .:? "retweeted"
                <*> o .:? "retweeted_status"
                <*> o .:  "source"
-               <*> o .:  "text"
+               <*> ((o .: "extended_tweet" >>= (.: "full_text")) <|> o .: "text")
                <*> o .:  "truncated"
                <*> o .:  "user"
                <*> o .:? "withheld_copyright"
@@ -322,7 +322,7 @@ instance FromJSON RetweetedStatus where
     parseJSON (Object o) = checkError o >>
         RetweetedStatus <$> (o .:  "created_at" >>= return . fromTwitterTime)
                         <*> o .:  "id"
-                        <*> o .:  "text"
+                        <*> ((o .: "extended_tweet" >>= (.: "full_text")) <|> o .: "text")
                         <*> o .:  "source"
                         <*> o .:  "truncated"
                         <*> o .:? "entities"
